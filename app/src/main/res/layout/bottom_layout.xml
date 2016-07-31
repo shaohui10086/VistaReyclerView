@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="utf-8"?>
+<FrameLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content">
+    <ViewStub
+        android:id="@+id/load_more_progress"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content" />
+    <ViewStub
+        android:id="@+id/load_more_failure"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content" />
+    <ViewStub
+        android:id="@+id/load_no_more"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content" />
+</FrameLayout>
