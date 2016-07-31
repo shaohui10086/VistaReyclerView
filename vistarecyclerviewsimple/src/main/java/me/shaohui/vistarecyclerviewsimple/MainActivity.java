@@ -90,11 +90,11 @@ public class MainActivity extends AppCompatActivity {
         new Handler().postDelayed(new Runnable() {
             @Override
             public void run() {
-//                for (int i = 1; i< 10; i++) {
-//                    data.add("测试数据");
-//                }
-//                recyclerView.notifyDataSetChanged();
-                recyclerView.showErrorView();
+                for (int i = 1; i< 10; i++) {
+                    data.add("测试数据");
+                }
+                recyclerView.notifyDataSetChanged();
+//                recyclerView.showErrorView();
             }
         }, 1000);
     }

@@ -17,6 +17,10 @@ public class AgentAdapter extends RecyclerView.Adapter{
     private RecyclerView.Adapter<RecyclerView.ViewHolder> mAdapter;
     private BottomViewHolder bottomViewHolder;
 
+    private int loadProgressId = R.layout.bottom_load_progress;
+    private int loadFailureId = R.layout.bottom_load_failure;
+    private int loadNoMoreId = R.layout.bottom_load_no_more;
+
     public static final int TYPE_BOTTOM = 798;
 
     public AgentAdapter(RecyclerView.Adapter<RecyclerView.ViewHolder> adapter) {
@@ -42,6 +46,7 @@ public class AgentAdapter extends RecyclerView.Adapter{
             if (bottomViewHolder == null) {
                 bottomViewHolder =  new BottomViewHolder(LayoutInflater
                         .from(parent.getContext()).inflate(R.layout.bottom_layout, parent, false));
+                bottomViewHolder.setLayout(loadProgressId, loadFailureId, loadNoMoreId);
             }
             return bottomViewHolder;
         } else {
@@ -89,12 +94,12 @@ public class AgentAdapter extends RecyclerView.Adapter{
         bottomViewHolder.mLoadNoMore.setVisibility(View.VISIBLE);
     }
 
-    public void setLoadProgressId(int loadProgressId) {
-        bottomViewHolder.loadProgressId = loadProgressId;
-    }
-
-    public void setLoadFailureId(int loadFailureId) {
-        bottomViewHolder.loadFailureId = loadFailureId;
+    public void placeBottomLayout(int bottomProgress,
+                                  int bottomFailure,
+                                  int bottomNoMore) {
+        loadProgressId = bottomProgress;
+        loadFailureId = bottomFailure;
+        loadNoMoreId = bottomNoMore;
     }
 
     public void setLoadNoMoreId(int loadNoMoreId) {
@@ -125,6 +130,12 @@ public class AgentAdapter extends RecyclerView.Adapter{
             loadMoreFailure = (ViewStub) itemView.findViewById(R.id.load_more_failure);
             loadMoreProgress = (ViewStub) itemView.findViewById(R.id.load_more_progress);
             loadNoMore = (ViewStub) itemView.findViewById(R.id.load_no_more);
+        }
+
+        public void setLayout(int progress, int failure, int noMore) {
+            loadProgressId = progress;
+            loadFailureId = failure;
+            loadNoMoreId = noMore;
 
             initView();
         }

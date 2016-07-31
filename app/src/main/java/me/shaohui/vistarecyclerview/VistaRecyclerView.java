@@ -123,6 +123,7 @@ public class VistaRecyclerView extends FrameLayout {
     private void initRecycler(View v) {
         mRecycler = (RecyclerView) v.findViewById(R.id.vista_recycler);
         mAdapter = new AgentAdapter(null);
+        mAdapter.placeBottomLayout(mBottomLoadProgressId, mBottomLoadFailureId, mBottomLoadNoMoreId);
 
         mInternalOnScrollListener = new RecyclerView.OnScrollListener() {
             @Override
