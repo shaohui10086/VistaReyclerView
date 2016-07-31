@@ -5,7 +5,9 @@
         <attr name="bottom_load_failure" format="reference"/>
         <attr name="bottom_load_no_more" format="reference"/>
         <attr name="empty_layout" format="reference"/>
+        <attr name="error_layout" format="reference"/>
         <attr name="load_layout" format="reference"/>
         <attr name="preload_size" format="integer"/>
+        <attr name="refresh_color" format="color"/>
     </declare-styleable>
 </resources>

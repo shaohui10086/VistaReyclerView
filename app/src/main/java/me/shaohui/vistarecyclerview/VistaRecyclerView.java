@@ -15,7 +15,6 @@ import android.view.View;
 import android.view.ViewStub;
 import android.widget.FrameLayout;
 
-import java.util.IllegalFormatException;
 import java.util.IllegalFormatFlagsException;
 
 import me.shaohui.vistarecyclerview.adapter.AgentAdapter;
@@ -28,9 +27,9 @@ public class VistaRecyclerView extends FrameLayout {
     private SwipeRefreshLayout refreshLayout;
     private RecyclerView mRecycler;
     private AgentAdapter mAdapter;
-    private ViewStub emptyView;
 
     private View mEmpty;
+    private View mError;
     private View mLoadProgress;
 
     private int COUNT_LEFT_TO_LOAD_MORE;
@@ -38,7 +37,9 @@ public class VistaRecyclerView extends FrameLayout {
     private int mBottomLoadFailureId;
     private int mBottomLoadNoMoreId;
     private int mEmptyId;
+    private int mErrorId;
     private int mLoadingProgressId;
+    private int refreshColor;
 
     private LAYOUT_MANAGER_TYPE layoutManagerType;
     private int[] lastScrollPositions;
@@ -77,8 +78,10 @@ public class VistaRecyclerView extends FrameLayout {
             mBottomLoadFailureId = a.getResourceId(R.styleable.VistaRecyclerView_bottom_load_failure, R.layout.bottom_load_failure);
             mBottomLoadNoMoreId = a.getResourceId(R.styleable.VistaRecyclerView_bottom_load_no_more, R.layout.bottom_load_no_more);
             mEmptyId = a.getResourceId(R.styleable.VistaRecyclerView_empty_layout, R.layout.empty_layout);
+            mErrorId = a.getResourceId(R.styleable.VistaRecyclerView_error_layout, R.layout.error_layout);
             mLoadingProgressId = a.getResourceId(R.styleable.VistaRecyclerView_load_layout, 0);
             COUNT_LEFT_TO_LOAD_MORE = a.getInt(R.styleable.VistaRecyclerView_preload_size, 0);
+            refreshColor = a.getColor(R.styleable.VistaRecyclerView_refresh_color, 0);
         } finally {
             a.recycle();
         }
@@ -89,6 +92,9 @@ public class VistaRecyclerView extends FrameLayout {
                 .inflate(R.layout.vista_recycler_view, this);
         refreshLayout = (SwipeRefreshLayout) v.findViewById(R.id.refresh_layout);
         refreshLayout.setEnabled(false);
+        if (refreshColor != 0) {
+            refreshLayout.setColorSchemeColors(new int[]{refreshColor});
+        }
 
         ViewStub loadProgress = (ViewStub) v.findViewById(R.id.load_progress);
         if (mLoadingProgressId != 0) {
@@ -97,12 +103,19 @@ public class VistaRecyclerView extends FrameLayout {
         }
         loadProgress.setVisibility(GONE);
 
-        emptyView = (ViewStub) v.findViewById(R.id.empty_view);
+        ViewStub emptyView = (ViewStub) v.findViewById(R.id.empty_view);
         if (mEmptyId != 0) {
             emptyView.setLayoutResource(mEmptyId);
             mEmpty = emptyView.inflate();
         }
         emptyView.setVisibility(GONE);
+
+        ViewStub errorView = (ViewStub) v.findViewById(R.id.error_view);
+        if (mErrorId != 0) {
+            errorView.setLayoutResource(mErrorId);
+            mError = errorView.inflate();
+        }
+        errorView.setVisibility(GONE);
 
         initRecycler(v);
     }
@@ -273,6 +286,10 @@ public class VistaRecyclerView extends FrameLayout {
                     if (mLoadProgress != null) {
                         mLoadProgress.setVisibility(GONE);
                     }
+
+                    if (mError != null) {
+                        mError.setVisibility(GONE);
+                    }
                 }
             });
 
@@ -353,14 +370,45 @@ public class VistaRecyclerView extends FrameLayout {
         mAdapter.notifyDataSetChanged();
     }
 
+    public void showEmptyView() {
+        refreshLayout.setRefreshing(false);
+        if (mEmpty != null) {
+            mEmpty.setVisibility(VISIBLE);
+        }
+    }
+
+    public void showErrorView() {
+        refreshLayout.setRefreshing(false);
+        if (mError != null) {
+            mError.setVisibility(VISIBLE);
+        }
+    }
+
+    public void setErrorListener(OnClickListener listener) {
+        if (mError != null) {
+            mError.setOnClickListener(listener);
+        }
+    }
+
+    public void showProgressView() {
+        if (mLoadProgress != null) {
+            mLoadProgress.setVisibility(VISIBLE);
+        }
+    }
+
     public void clear() {
         refreshLayout.setRefreshing(false);
         isLoadingMore = false;
         setAdapter(null);
     }
 
-    public void setRefreshing(boolean isRefreshing) {
-        refreshLayout.setRefreshing(isRefreshing);
+    public void setRefreshing(final boolean isRefreshing) {
+        postDelayed(new Runnable() {
+            @Override
+            public void run() {
+                refreshLayout.setRefreshing(isRefreshing);
+            }
+        }, 1);
     }
 
     public void setRefreshListener(SwipeRefreshLayout.OnRefreshListener listener) {
@@ -383,11 +431,11 @@ public class VistaRecyclerView extends FrameLayout {
         COUNT_LEFT_TO_LOAD_MORE = preLoad;
     }
 
-    public void setRefreshingColor(int... colors) {
+    public void setRefreshColorSchemeColors(int... colors) {
         refreshLayout.setColorSchemeColors(colors);
     }
 
-    public void setRefreshLayoutResource(@ColorRes int... colorResources) {
+    public void setRefreshColorSchemeResources(@ColorRes int... colorResources) {
         refreshLayout.setColorSchemeResources(colorResources);
     }
 

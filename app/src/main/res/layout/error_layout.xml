@@ -9,6 +9,6 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_centerInParent="true"
-        android:text="没有任何数据"/>
+        android:text="加载失败"/>
 
 </RelativeLayout>

@@ -6,6 +6,7 @@ import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.StaggeredGridLayoutManager;
+import android.view.View;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -72,13 +73,28 @@ public class MainActivity extends AppCompatActivity {
             }
         }, 2);
 
+        loadData();
+
+        recyclerView.setRefreshing(true);
+        recyclerView.setErrorListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                recyclerView.setRefreshing(true);
+                loadData();
+            }
+        });
+//        recyclerView.setRefreshColorSchemeColors(new int[]{getResources().getColor(R.color.colorAccent)});
+    }
+
+    private void loadData() {
         new Handler().postDelayed(new Runnable() {
             @Override
             public void run() {
-                for (int i = 1; i< 10; i++) {
-                    data.add("测试数据");
-                }
-                recyclerView.notifyDataSetChanged();
+//                for (int i = 1; i< 10; i++) {
+//                    data.add("测试数据");
+//                }
+//                recyclerView.notifyDataSetChanged();
+                recyclerView.showErrorView();
             }
         }, 1000);
     }
