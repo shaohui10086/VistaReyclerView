@@ -25,7 +25,7 @@ dependencies {
 
 def siteUrl = "https://github.com/shaohui10086/VistaReyclerView"
 def gitUrl = "git@github.com:shaohui10086/VistaReyclerView.git"
-group = "me.shaohui.VistaRecyclerView"
+group = "me.shaohui.vistarecyclerview"
 install {
     repositories.mavenInstaller {
         pom {
