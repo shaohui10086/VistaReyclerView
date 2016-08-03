@@ -2,6 +2,7 @@ package me.shaohui.vistarecyclerview;
 
 import android.content.Context;
 import android.content.res.TypedArray;
+import android.graphics.Canvas;
 import android.support.annotation.ColorRes;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.widget.GridLayoutManager;
@@ -124,6 +125,13 @@ public class VistaRecyclerView extends FrameLayout {
         mRecycler = (RecyclerView) v.findViewById(R.id.vista_recycler);
         mAdapter = new AgentAdapter(null);
         mAdapter.placeBottomLayout(mBottomLoadProgressId, mBottomLoadFailureId, mBottomLoadNoMoreId);
+
+        mRecycler.addItemDecoration(new RecyclerView.ItemDecoration() {
+            @Override
+            public void onDraw(Canvas c, RecyclerView parent, RecyclerView.State state) {
+                super.onDraw(c, parent, state);
+            }
+        });
 
         mInternalOnScrollListener = new RecyclerView.OnScrollListener() {
             @Override

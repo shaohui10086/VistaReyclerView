@@ -5,6 +5,7 @@ import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.GridLayoutManager;
+import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.StaggeredGridLayoutManager;
 import android.view.View;
 
@@ -14,6 +15,7 @@ import java.util.List;
 import me.shaohui.vistarecyclerview.GridSpanSizeLookup;
 import me.shaohui.vistarecyclerview.OnMoreListener;
 import me.shaohui.vistarecyclerview.VistaRecyclerView;
+import me.shaohui.vistarecyclerview.decoration.SpacingDecoration;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -32,16 +34,19 @@ public class MainActivity extends AppCompatActivity {
 
         GridLayoutManager gridLayoutManager = new GridLayoutManager(this, 2);
         recyclerView.setLayoutManager(gridLayoutManager);
-        recyclerView.setGridSpanSizeLookup(new GridSpanSizeLookup(2) {
-            @Override
-            public int getSpanSize(int position) {
-                if (position == 3) {
-                    return 2;
-                } else {
-                    return 1;
-                }
-            }
-        });
+//        recyclerView.setGridSpanSizeLookup(new GridSpanSizeLookup(2) {
+//            @Override
+//            public int getSpanSize(int position) {
+//                if (position == 3) {
+//                    return 2;
+//                } else {
+//                    return 1;
+//                }
+//            }
+//        });
+
+//        recyclerView.setLayoutManager(new LinearLayoutManager(this, LinearLayoutManager.VERTICAL, false));
+        recyclerView.addItemDecoration(new SpacingDecoration(20));
 
         recyclerView.setRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
             @Override
