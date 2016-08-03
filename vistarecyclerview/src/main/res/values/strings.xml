@@ -1,5 +1,6 @@
 <resources>
     <string name="app_name">VistaRecyclerView</string>
-    <string name="network_error">网络信号似乎不是那么通畅</string>
-    <string name="click_to_refresh">点击屏幕刷新</string>
+    <string name="vista_network_error">网络信号似乎不是那么通畅</string>
+    <string name="vista_click_to_refresh">点击屏幕刷新</string>
+    <string name="vista_empty_message">貌似没加载出来任何数据</string>
 </resources>

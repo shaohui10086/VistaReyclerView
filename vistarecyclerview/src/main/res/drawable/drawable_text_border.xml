@@ -2,5 +2,6 @@
 <shape xmlns:android="http://schemas.android.com/apk/res/android">
     <corners android:radius="2dp"/>
     <solid android:color="@android:color/white"/>
-    <stroke android:color="@color/vista_error_color"/>
+    <stroke android:color="@color/vista_error_color"
+        android:width="2px"/>
 </shape>
