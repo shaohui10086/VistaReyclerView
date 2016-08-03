@@ -2,10 +2,22 @@
 <RelativeLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
-    android:layout_height="80dp">
-    <TextView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_centerInParent="true"
-        android:text="没有更多了"/>
+    android:layout_height="wrap_content">
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="64dp"
+        android:orientation="horizontal"
+        android:gravity="center">
+        <ImageView
+            android:layout_width="24dp"
+            android:layout_height="wrap_content"
+            android:src="@mipmap/vista_no_more"/>
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="@dimen/activity_vertical_margin"
+            android:textColor="@color/vista_error_color"
+            android:textSize="12sp"
+            android:text="@string/vista_no_more"/>
+    </LinearLayout>
 </RelativeLayout>

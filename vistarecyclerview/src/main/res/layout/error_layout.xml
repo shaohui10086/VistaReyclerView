@@ -14,7 +14,7 @@
         <ImageView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:src="@mipmap/network_none"/>
+            android:src="@mipmap/vista_network_none"/>
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
