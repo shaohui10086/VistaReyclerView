@@ -49,23 +49,26 @@ public class DividerDecoration extends RecyclerView.ItemDecoration {
     public void onDrawOver(Canvas c, RecyclerView parent, RecyclerView.State state) {
         RecyclerView.LayoutManager manager = parent.getLayoutManager();
         if (manager instanceof LinearLayoutManager) {
-            for (int i = 0 ; i < parent.getAdapter().getItemCount() - 2; i++ ) {
+            for (int i = 0 ; i < parent.getChildCount(); i++ ) {
                 View child = parent.getChildAt(i);
-                int orientation = ((LinearLayoutManager) manager).getOrientation();
-                if (orientation == OrientationHelper.VERTICAL) {
-                    mColorDrawable.setBounds(
-                            child.getLeft() + paddingStart,
-                            child.getBottom(),
-                            child.getRight() - paddingEnd,
-                            child.getBottom() + height);
-                } else if (orientation == OrientationHelper.HORIZONTAL) {
-                    mColorDrawable.setBounds(
-                            child.getRight(),
-                            child.getTop() + paddingStart,
-                            child.getRight() + height,
-                            child.getBottom() - paddingEnd);
+                int position = parent.getChildAdapterPosition(child);
+                if (position < parent.getAdapter().getItemCount() - 2) {
+                    int orientation = ((LinearLayoutManager) manager).getOrientation();
+                    if (orientation == OrientationHelper.VERTICAL) {
+                        mColorDrawable.setBounds(
+                                child.getLeft() + paddingStart,
+                                child.getBottom(),
+                                child.getRight() - paddingEnd,
+                                child.getBottom() + height);
+                    } else if (orientation == OrientationHelper.HORIZONTAL) {
+                        mColorDrawable.setBounds(
+                                child.getRight(),
+                                child.getTop() + paddingStart,
+                                child.getRight() + height,
+                                child.getBottom() - paddingEnd);
+                    }
+                    mColorDrawable.draw(c);
                 }
-                mColorDrawable.draw(c);
             }
         }
     }
