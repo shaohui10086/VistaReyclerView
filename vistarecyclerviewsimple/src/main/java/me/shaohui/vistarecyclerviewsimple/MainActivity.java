@@ -15,6 +15,7 @@ import java.util.List;
 import me.shaohui.vistarecyclerview.GridSpanSizeLookup;
 import me.shaohui.vistarecyclerview.OnMoreListener;
 import me.shaohui.vistarecyclerview.VistaRecyclerView;
+import me.shaohui.vistarecyclerview.decoration.DividerDecoration;
 import me.shaohui.vistarecyclerview.decoration.SpacingDecoration;
 
 public class MainActivity extends AppCompatActivity {
@@ -32,8 +33,8 @@ public class MainActivity extends AppCompatActivity {
         SimpleAdapter adapter = new SimpleAdapter(data);
         recyclerView.setAdapter(adapter);
 
-        GridLayoutManager gridLayoutManager = new GridLayoutManager(this, 2);
-        recyclerView.setLayoutManager(gridLayoutManager);
+//        GridLayoutManager gridLayoutManager = new GridLayoutManager(this, 2);
+//        recyclerView.setLayoutManager(gridLayoutManager);
 //        recyclerView.setGridSpanSizeLookup(new GridSpanSizeLookup(2) {
 //            @Override
 //            public int getSpanSize(int position) {
@@ -45,8 +46,9 @@ public class MainActivity extends AppCompatActivity {
 //            }
 //        });
 
-//        recyclerView.setLayoutManager(new LinearLayoutManager(this, LinearLayoutManager.VERTICAL, false));
-        recyclerView.addItemDecoration(new SpacingDecoration(20));
+        recyclerView.setLayoutManager(new LinearLayoutManager(this, LinearLayoutManager.VERTICAL, false));
+//        recyclerView.addItemDecoration(new SpacingDecoration(20));
+        recyclerView.addItemDecoration(new DividerDecoration(getResources().getColor(android.R.color.holo_blue_bright), 20, 30, 100));
 
         recyclerView.setRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
             @Override
