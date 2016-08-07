@@ -10,14 +10,43 @@ buildscript {
         // NOTE: Do not place your application dependencies here; they belong
         // in the individual module build.gradle files
     }
+
 }
+
 plugins {
     id "com.jfrog.bintray" version "1.7"
 }
 
-allprojects {
+allprojects { thisproject ->
     repositories {
         jcenter()
+    }
+
+//    bintray {
+//        if (thisproject == rootProject) {
+//            configurations = []
+//        } else {
+//            configurations = ['archives']
+//        }
+//    }
+}
+
+def siteUrl = "https://github.com/shaohui10086/VistaReyclerView"
+def gitUrl = "git@github.com:shaohui10086/VistaReyclerView.git"
+Properties properties = new Properties()
+properties.load(project.rootProject.file('local.properties').newDataInputStream())
+bintray {
+    user = properties.getProperty("bintray.user")
+    key = properties.getProperty("bintray.apikey")
+    configurations = ['archives']
+    pkg {
+        repo = "maven"
+        name = "VistaRecyclerView"    //发布到JCenter上的项目名字
+        websiteUrl = siteUrl
+        vcsUrl = gitUrl
+        licenses = ["Apache-2.0"]
+        publish = true
+        override = true
     }
 }
 
