@@ -1,3 +1,42 @@
 <resources>
     <string name="app_name">VistaRecyclerViewSimple</string>
+
+    <string-array name="image_list">
+        <item>https://d13yacurqjgara.cloudfront.net/users/13774/screenshots/2889567/std-commandz_1x.jpg</item>
+        <item>https://d13yacurqjgara.cloudfront.net/users/255/screenshots/2889662/die-arting_1x.png</item>
+        <item>https://d13yacurqjgara.cloudfront.net/users/413551/screenshots/2889447/dribbble_invite_letter__1x.jpg</item>
+        <item>https://d13yacurqjgara.cloudfront.net/users/13774/screenshots/2889583/std-untitledai_1x.jpg</item>
+        <item>https://d13yacurqjgara.cloudfront.net/users/31348/screenshots/2889452/pilsner-dribbble.gif</item>
+        <item>https://d13yacurqjgara.cloudfront.net/users/33827/screenshots/2889278/abw_glass_1x.jpg</item>
+        <item>https://d13yacurqjgara.cloudfront.net/users/35381/screenshots/2889335/shopicons_1x.png</item>
+        <item>https://d13yacurqjgara.cloudfront.net/users/168777/screenshots/2889238/summer_workspace_1x.jpg</item>
+    </string-array>
+    <string-array name="image_list_2">
+        <item>https://d13yacurqjgara.cloudfront.net/users/31752/screenshots/2890042/portland_1x.jpg</item>
+        <item>https://d13yacurqjgara.cloudfront.net/users/45389/screenshots/2889178/flat_ui_illustration2_1x.png</item>
+        <item>https://d13yacurqjgara.cloudfront.net/users/37530/screenshots/2889241/mojo-logo_1x.png</item>
+        <item>https://d13yacurqjgara.cloudfront.net/users/58267/screenshots/2889183/sans-bakery-pt2_1x.jpg</item>
+        <item>https://d13yacurqjgara.cloudfront.net/users/69311/screenshots/2890002/pb-goose_1x.jpg</item>
+        <item>https://d13yacurqjgara.cloudfront.net/users/32512/screenshots/2889696/neeeo_product_logo.gif</item>
+    </string-array>
+
+    <string-array name="image_list_3">
+        <item>https://d13yacurqjgara.cloudfront.net/users/52084/screenshots/2889902/centttt_1x.jpg</item>
+        <item>https://d13yacurqjgara.cloudfront.net/users/594619/screenshots/2889270/slider.gif</item>
+        <item>https://d13yacurqjgara.cloudfront.net/users/44585/screenshots/2889624/mariner-logo-final.png</item>
+        <item>https://d13yacurqjgara.cloudfront.net/users/332742/screenshots/2889370/aerotion.gif</item>
+        <item>https://d13yacurqjgara.cloudfront.net/users/32287/screenshots/2889835/indoorsy-dribbble_1x.jpg</item>
+        <item>https://d13yacurqjgara.cloudfront.net/users/281624/screenshots/2889256/dsc1_1x.png</item>
+        <item>https://d13yacurqjgara.cloudfront.net/users/631290/screenshots/2889260/untitled-9_1x.jpg</item>
+        <item>https://d13yacurqjgara.cloudfront.net/users/91583/screenshots/2889683/hotdog2-01_1x.png</item>
+        <item>https://d13yacurqjgara.cloudfront.net/users/156689/screenshots/2889648/std-yay.gif</item>
+        <item>https://d13yacurqjgara.cloudfront.net/users/327319/screenshots/2889327/cruisertrailer-01_1x.png</item>
+        <item>https://d13yacurqjgara.cloudfront.net/users/458522/screenshots/2889967/family_of_mobcrush_products_d_1x.jpg</item>
+        <item>https://d13yacurqjgara.cloudfront.net/users/257123/screenshots/2889698/lemon_1x.png</item>
+        <item>https://d13yacurqjgara.cloudfront.net/users/440947/screenshots/2889194/jurekka_animation_dribbbleshot.gif</item>
+        <item>https://d13yacurqjgara.cloudfront.net/users/31675/screenshots/2889227/select-card_2x_1x.png</item>
+        <item>https://d13yacurqjgara.cloudfront.net/users/464226/screenshots/2889540/mysql_datadirectory_dribbble.png</item>
+        <item>https://d13yacurqjgara.cloudfront.net/users/105681/screenshots/2889644/curriculum-vitae_1x.png</item>
+        <item>https://d13yacurqjgara.cloudfront.net/users/540300/screenshots/2889451/dribbble9-01_1x.png</item>
+    </string-array>
 </resources>

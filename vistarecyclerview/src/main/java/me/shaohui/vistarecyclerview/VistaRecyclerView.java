@@ -172,7 +172,6 @@ public class VistaRecyclerView extends FrameLayout {
             refreshLayout.setEnabled(false);
 
             if (mOnMoreListener != null) {
-                Log.i(TAG, "开始加载");
                 mAdapter.loadMore();
                 mOnMoreListener.noMoreAsked(totalItemCount, COUNT_LEFT_TO_LOAD_MORE, lastVisibleItemPosition);
             }
@@ -192,7 +191,6 @@ public class VistaRecyclerView extends FrameLayout {
                 throw new RuntimeException("UnSupported layout manager");
             }
         }
-        Log.i(TAG, layoutManagerType.toString());
         switch (layoutManagerType) {
             case LINEAR:
                 lastVisibleItemPosition = ((LinearLayoutManager) manager).findLastVisibleItemPosition();
