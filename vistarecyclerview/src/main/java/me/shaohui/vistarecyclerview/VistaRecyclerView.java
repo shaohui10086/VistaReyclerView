@@ -284,6 +284,7 @@ public class VistaRecyclerView extends FrameLayout {
                         mEmpty.setVisibility(VISIBLE);
                     } else if (mEmpty != null){
                         mEmpty.setVisibility(GONE);
+                        mRecycler.setVisibility(VISIBLE);
                     }
 
                     if (canRefresh && !refreshLayout.isEnabled()) {
@@ -382,6 +383,13 @@ public class VistaRecyclerView extends FrameLayout {
         if (mEmpty != null) {
             mEmpty.setVisibility(VISIBLE);
         }
+        dismissErrorView();
+    }
+
+    public void dismissEmptyView() {
+        if (mEmpty != null) {
+            mEmpty.setVisibility(GONE);
+        }
     }
 
     public void showErrorView() {
@@ -389,6 +397,11 @@ public class VistaRecyclerView extends FrameLayout {
         if (mError != null) {
             mError.setVisibility(VISIBLE);
         }
+        dismissEmptyView();
+    }
+
+    public void dismissErrorView() {
+
     }
 
     public void setErrorListener(OnClickListener listener) {
@@ -418,10 +431,18 @@ public class VistaRecyclerView extends FrameLayout {
         }, 1);
     }
 
-    public void setRefreshListener(SwipeRefreshLayout.OnRefreshListener listener) {
+    public void setRefreshListener(final SwipeRefreshLayout.OnRefreshListener listener) {
         refreshLayout.setEnabled(true);
         canRefresh = true;
         refreshLayout.setOnRefreshListener(listener);
+
+        mError.setOnClickListener(new OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                refreshLayout.setRefreshing(true);
+                listener.onRefresh();
+            }
+        });
     }
 
 
@@ -431,6 +452,7 @@ public class VistaRecyclerView extends FrameLayout {
 
     public void setOnMoreListener(OnMoreListener listener) {
         this.mOnMoreListener = listener;
+        mAdapter.setOnMoreListener(listener);
     }
 
     public void setOnMoreListener(OnMoreListener listener, int preLoad) {

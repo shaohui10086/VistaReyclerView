@@ -7,19 +7,23 @@
         android:id="@+id/refresh_layout"
         android:layout_width="match_parent"
         android:layout_height="match_parent">
-        <android.support.v7.widget.RecyclerView
-            android:id="@+id/vista_recycler"
+        <FrameLayout
             android:layout_width="match_parent"
-            android:layout_height="match_parent"/>
+            android:layout_height="match_parent">
+            <android.support.v7.widget.RecyclerView
+                android:id="@+id/vista_recycler"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"/>
+            <ViewStub
+                android:id="@+id/empty_view"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent" />
+            <ViewStub
+                android:id="@+id/error_view"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent" />
+        </FrameLayout>
     </android.support.v4.widget.SwipeRefreshLayout>
-    <ViewStub
-        android:id="@+id/empty_view"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent" />
-    <ViewStub
-        android:id="@+id/error_view"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent" />
     <ViewStub
         android:id="@+id/load_progress"
         android:layout_width="wrap_content"

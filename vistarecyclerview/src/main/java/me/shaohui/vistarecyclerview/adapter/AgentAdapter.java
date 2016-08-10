@@ -7,6 +7,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.view.ViewStub;
 
+import me.shaohui.vistarecyclerview.OnMoreListener;
 import me.shaohui.vistarecyclerview.R;
 
 /**
@@ -20,6 +21,8 @@ public class AgentAdapter extends RecyclerView.Adapter{
     private int loadProgressId = R.layout.bottom_load_progress;
     private int loadFailureId = R.layout.bottom_load_failure;
     private int loadNoMoreId = R.layout.bottom_load_no_more;
+
+    private OnMoreListener listener;
 
     public static final int TYPE_BOTTOM = 798;
 
@@ -57,10 +60,9 @@ public class AgentAdapter extends RecyclerView.Adapter{
     @Override
     public void onBindViewHolder(RecyclerView.ViewHolder holder, int position) {
         if (getItemViewType(position) == TYPE_BOTTOM) {
-            //TODO
+            BottomViewHolder viewHolder = (BottomViewHolder) holder;
 
             // 处理StaggeredGrid
-            BottomViewHolder viewHolder = (BottomViewHolder) holder;
             if (viewHolder.itemView.getLayoutParams() instanceof StaggeredGridLayoutManager.LayoutParams) {
                 ((StaggeredGridLayoutManager.LayoutParams) viewHolder.itemView.getLayoutParams()).setFullSpan(true);
             }
@@ -87,6 +89,13 @@ public class AgentAdapter extends RecyclerView.Adapter{
     public void loadFailure() {
         bottomViewHolder.mLoadProgress.setVisibility(View.GONE);
         bottomViewHolder.mLoadFailure.setVisibility(View.VISIBLE);
+        bottomViewHolder.mLoadFailure.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                loadMore();
+                listener.noMoreAsked(mAdapter.getItemCount(), 0, mAdapter.getItemCount() - 1);
+            }
+        });
     }
 
     public void loadNoMore() {
@@ -100,6 +109,10 @@ public class AgentAdapter extends RecyclerView.Adapter{
         loadProgressId = bottomProgress;
         loadFailureId = bottomFailure;
         loadNoMoreId = bottomNoMore;
+    }
+
+    public void setOnMoreListener(OnMoreListener listener) {
+        this.listener = listener;
     }
 
     public void setLoadNoMoreId(int loadNoMoreId) {

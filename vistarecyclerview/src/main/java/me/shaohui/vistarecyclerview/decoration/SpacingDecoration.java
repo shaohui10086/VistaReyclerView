@@ -21,6 +21,8 @@ public class SpacingDecoration extends RecyclerView.ItemDecoration{
     public SpacingDecoration(int spacing) {
         horizontalSpacing = spacing;
         verticalSpacing = spacing;
+        halfH = horizontalSpacing/2;
+        halfV = verticalSpacing/2;
     }
 
     public SpacingDecoration(int horizontalSpacing, int verticalSpacing) {
