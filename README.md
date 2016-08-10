@@ -20,9 +20,9 @@
 Maven
 
     <dependency>
-      <groupId>me.shaohui.VistaRecyclerView</groupId>
-      <artifactId>app</artifactId>
-      <version>1.0.0</version>
+      <groupId>me.shaohui.vistarecyclerview</groupId>
+      <artifactId>vistarecyclerview</artifactId>
+      <version>1.0.2</version>
       <type>pom</type>
     </dependency>
 
@@ -30,7 +30,7 @@ Maven
 Gradle
 
 	dependencies {
-        compile 'me.shaohui.VistaRecyclerView:app:1.0.0'
+        compile 'me.shaohui.vistarecyclerview:vistarecyclerview:1.0.2'
      }
 
 ## TODO
