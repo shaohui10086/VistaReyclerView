@@ -1,4 +1,7 @@
 # VistaRecyclerView
+[![build](https://img.shields.io/badge/build-1.0.2-brightgreen.svg?maxAge=2592000)](https://bintray.com/shaohui/maven/VistaRecyclerView)
+[![license](https://img.shields.io/badge/license-Apache%202-blue.svg?maxAge=2592000)](https://github.com/shaohui10086/VistaReyclerView/blob/master/LICENSE)
+
 One approve `drop-down refresh` and bottom `load more` lightweight RecyclerView
 ## PreView
 
@@ -102,6 +105,10 @@ Gradle
      }
 
 ## Thanks For
+
+- https://github.com/wasabeef/recyclerview-animators
+- https://github.com/Malinskiy/SuperRecyclerView
+- https://github.com/Jude95/EasyRecyclerView
 
 ## TODO
 
