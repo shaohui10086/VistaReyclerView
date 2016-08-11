@@ -11,5 +11,11 @@
         android:id="@+id/recycler"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        app:refresh_color="@color/colorAccent" />
+        app:refresh_color="@color/colorAccent"
+        app:bottom_load_progress="@layout/bottom_layout"
+        app:bottom_load_failure="@layout/bottom_load_failure"
+        app:bottom_load_no_more="@layout/bottom_load_no_more"
+        app:empty_layout="@layout/empty_layout"
+        app:load_layout="@layout/load_layout"
+        app:error_layout="@layout/error_layout" />
 </RelativeLayout>

@@ -1,7 +1,9 @@
-# VistaReyclerView
+# VistaRecyclerView
 一个提供`加载更多`和`下拉刷新`的清真派RecyclerView
 ## PreView
 
+![preview1](http://static.shaohui.me/vista_recycler_linear.gif)
+![preview2](http://static.shaohui.me/vista_recycler_grid.gif)
 
 ## Features
 
@@ -12,7 +14,12 @@
 
 ## Usage
 
- 详细介绍稍后补上
+    <me.shaohui.vistarecyclerview.VistaRecyclerView
+        xmlns:app="http://schemas.android.com/apk/res-auto"
+        android:id="@+id/recycler"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent" />
+
 
 
 ## Import
@@ -22,7 +29,7 @@ Maven
     <dependency>
       <groupId>me.shaohui.vistarecyclerview</groupId>
       <artifactId>vistarecyclerview</artifactId>
-      <version>1.0.2</version>
+      <version>1.0.3</version>
       <type>pom</type>
     </dependency>
 
@@ -30,7 +37,7 @@ Maven
 Gradle
 
 	dependencies {
-        compile 'me.shaohui.vistarecyclerview:vistarecyclerview:1.0.2'
+        compile 'me.shaohui.vistarecyclerview:vistarecyclerview:1.0.3'
      }
 
 ## TODO
