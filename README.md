@@ -44,9 +44,11 @@ one more thing, to notify the dataSet change you have change your code from
     mAdapter.notifyDataSetChanged()
 
 to
+
     mRecycler.notifyDataSetChanged()
 
 or
+
     mRecycler.getAdapter().notifyDataSetChanged()
 
 There also are some methods you might use
