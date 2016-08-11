@@ -1,5 +1,5 @@
 # VistaRecyclerView
-one approve drop-down refresh and bottom load more lightweight RecyclerView
+One approve `drop-down refresh` and bottom `load more` lightweight RecyclerView
 ## PreView
 
 ![preview1](/preview/vista_recycler_grid.gif)
@@ -23,7 +23,7 @@ add the following code to your layout xml
         android:layout_width="match_parent"
         android:layout_height="match_parent" />
 
-then
+then, in the activity
 
     recyclerView.setRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
         @Override
@@ -38,6 +38,21 @@ then
             loadNoMore();
         }
     });
+
+one more thing, to notify the dataSet change you have change your code from
+
+    mAdapter.notifyDataSetChanged()
+
+to
+    mRecycler.notifyDataSetChanged()
+
+or
+    mRecycler.getAdapter().notifyDataSetChanged()
+
+There also are some methods you might use
+
+    mRecycler.showEmptyView() // if you want to show the empty view
+    mRecycler.showErrorView() // if you fetch data catch some Exception, then show the error view
 
 that is ALL!
 
