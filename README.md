@@ -1,5 +1,5 @@
 # VistaRecyclerView
-一个提供`加载更多`和`下拉刷新`的清真派RecyclerView
+one approve drop-down refresh and bottom load more lightweight RecyclerView
 ## PreView
 
 ![preview1](/preview/vista_recycler_grid.gif)
@@ -7,12 +7,15 @@
 
 ## Features
 
-* 自定义Empty视图, Error视图, 以及Loading视图
-* 实现了下拉刷新和底部加载更多
-* 加载更多:自定义加载中,加载失败和加载完成View
-* 兼容LinearLayoutManager,GridLayoutManager和StaggeredGridLayoutManager
+* customize the `Empty Layout`, `Error Layout`, and `Loading Progress Layout`
+* achieved the drop-down refresh and bottom load more
+* customize load more layout, including the loading, error and no more
+* compatible LinearLayout, GridLayoutManager and StaggeredGridLayoutManager
+* Lightweight,
 
 ## Usage
+
+add the following code to your layout xml
 
     <me.shaohui.vistarecyclerview.VistaRecyclerView
         xmlns:app="http://schemas.android.com/apk/res-auto"
@@ -20,7 +23,35 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent" />
 
+then
 
+    recyclerView.setRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
+        @Override
+        public void onRefresh() {
+            fetchData();
+        }
+    });
+
+    recyclerView.setOnMoreListener(new OnMoreListener() {
+        @Override
+        public void noMoreAsked(int total, int left, int current) {
+            loadNoMore();
+        }
+    });
+
+that is ALL!
+
+Of course, you can also not add the above Listener, this is an ordinary recyclerView
+
+there also have some Custom Attributes you can use
+
+    app:refresh_color="@color/colorAccent"
+    app:bottom_load_progress="@layout/bottom_layout"
+    app:bottom_load_failure="@layout/bottom_load_failure"
+    app:bottom_load_no_more="@layout/bottom_load_no_more"
+    app:empty_layout="@layout/empty_layout"
+    app:load_layout="@layout/load_layout"
+    app:error_layout="@layout/error_layout"
 
 ## Import
 
