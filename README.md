@@ -112,6 +112,7 @@ Gradle
 
 ## TODO
 
+- OnItemTouchListener
 
 ## License
 

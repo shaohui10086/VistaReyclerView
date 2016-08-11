@@ -445,6 +445,18 @@ public class VistaRecyclerView extends FrameLayout {
         });
     }
 
+    public RecyclerView getRecycler() {
+        return mRecycler;
+    }
+
+    public RecyclerView.Adapter getAdapter() {
+        return mAdapter;
+    }
+
+    public void setItemAnimator(RecyclerView.ItemAnimator itemAnimator) {
+        mRecycler.setItemAnimator(itemAnimator);
+    }
+
 
     public void addOnItemTouchListener(RecyclerView.OnItemTouchListener listener) {
         mRecycler.addOnItemTouchListener(listener);
