@@ -5,6 +5,8 @@ One approve `drop-down refresh` and bottom `load more` lightweight RecyclerView
 ![preview1](/preview/vista_recycler_grid.gif)
 ![preview2](/preview/vista_recycler_linear.gif)
 
+    The RecyclerView ItemAnimator is provider by [RecyclerView Animators](https://github.com/wasabeef/recyclerview-animators)
+
 ## Features
 
 * customize the `Empty Layout`, `Error Layout`, and `Loading Progress Layout`
@@ -70,6 +72,17 @@ there also have some Custom Attributes you can use
     app:load_layout="@layout/load_layout"
     app:error_layout="@layout/error_layout"
 
+#### For Divider
+
+VistaRecyclerView provides two classes to achieve this effect, you can only add spacing between the items
+
+    mRecycler.addItemDecoration(new SpacingDecoration(int size));
+
+or add the special divider between the items
+
+    mRecycler.addItemDecoration(new DividerDecoration(int color, int size));  // but this only support the LinearLayoutManager
+
+
 ## Import
 
 Maven
@@ -87,6 +100,8 @@ Gradle
 	dependencies {
         compile 'me.shaohui.vistarecyclerview:vistarecyclerview:1.0.3'
      }
+
+## Thanks For
 
 ## TODO
 
