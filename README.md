@@ -2,8 +2,8 @@
 一个提供`加载更多`和`下拉刷新`的清真派RecyclerView
 ## PreView
 
-![preview1](http://static.shaohui.me/vista_recycler_linear_small.gif)
-![preview2](http://static.shaohui.me/vista_recycler_grid_small.gif)
+![preview1](/preview/vista_recycler_grid.gif)
+![preview2](/preview/vista_recycler_linear.gif)
 
 ## Features
 
