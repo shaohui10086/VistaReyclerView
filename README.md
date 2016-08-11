@@ -8,7 +8,7 @@ One approve `drop-down refresh` and bottom `load more` lightweight RecyclerView
 ![preview1](/preview/vista_recycler_grid.gif)
 ![preview2](/preview/vista_recycler_linear.gif)
 
-    The RecyclerView ItemAnimator is provider by [RecyclerView Animators](https://github.com/wasabeef/recyclerview-animators)
+**The RecyclerView ItemAnimator is provider by [RecyclerView Animators](https://github.com/wasabeef/recyclerview-animators)**
 
 ## Features
 
