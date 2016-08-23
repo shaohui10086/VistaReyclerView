@@ -46,11 +46,9 @@ public class AgentAdapter extends RecyclerView.Adapter{
     @Override
     public RecyclerView.ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
         if (viewType == TYPE_BOTTOM) {
-            if (bottomViewHolder == null) {
-                bottomViewHolder =  new BottomViewHolder(LayoutInflater
-                        .from(parent.getContext()).inflate(R.layout.bottom_layout, parent, false));
-                bottomViewHolder.setLayout(loadProgressId, loadFailureId, loadNoMoreId);
-            }
+            bottomViewHolder =  new BottomViewHolder(LayoutInflater
+                    .from(parent.getContext()).inflate(R.layout.bottom_layout, parent, false));
+            bottomViewHolder.setLayout(loadProgressId, loadFailureId, loadNoMoreId);
             return bottomViewHolder;
         } else {
             return mAdapter.onCreateViewHolder(parent, viewType);
