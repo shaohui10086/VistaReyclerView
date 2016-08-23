@@ -81,7 +81,9 @@ public class AgentAdapter extends RecyclerView.Adapter{
     }
 
     public void loadMoreSuccess() {
-        bottomViewHolder.mLoadProgress.setVisibility(View.GONE);
+        if (bottomViewHolder != null) {
+            bottomViewHolder.mLoadProgress.setVisibility(View.GONE);
+        }
     }
 
     public void loadFailure() {
