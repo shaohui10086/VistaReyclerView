@@ -46,7 +46,7 @@ public class AgentAdapter extends RecyclerView.Adapter{
     @Override
     public RecyclerView.ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
         if (viewType == TYPE_BOTTOM) {
-            bottomViewHolder =  new BottomViewHolder(LayoutInflater
+            bottomViewHolder = new BottomViewHolder(LayoutInflater
                     .from(parent.getContext()).inflate(R.layout.bottom_layout, parent, false));
             bottomViewHolder.setLayout(loadProgressId, loadFailureId, loadNoMoreId);
             return bottomViewHolder;
@@ -75,9 +75,11 @@ public class AgentAdapter extends RecyclerView.Adapter{
     }
 
     public void loadMore() {
-        bottomViewHolder.mLoadFailure.setVisibility(View.GONE);
-        bottomViewHolder.mLoadNoMore.setVisibility(View.GONE);
-        bottomViewHolder.mLoadProgress.setVisibility(View.VISIBLE);
+        if (bottomViewHolder != null) {
+            bottomViewHolder.mLoadFailure.setVisibility(View.GONE);
+            bottomViewHolder.mLoadNoMore.setVisibility(View.GONE);
+            bottomViewHolder.mLoadProgress.setVisibility(View.VISIBLE);
+        }
     }
 
     public void loadMoreSuccess() {
@@ -87,15 +89,17 @@ public class AgentAdapter extends RecyclerView.Adapter{
     }
 
     public void loadFailure() {
-        bottomViewHolder.mLoadProgress.setVisibility(View.GONE);
-        bottomViewHolder.mLoadFailure.setVisibility(View.VISIBLE);
-        bottomViewHolder.mLoadFailure.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                loadMore();
-                listener.noMoreAsked(mAdapter.getItemCount(), 0, mAdapter.getItemCount() - 1);
-            }
-        });
+        if (bottomViewHolder != null) {
+            bottomViewHolder.mLoadProgress.setVisibility(View.GONE);
+            bottomViewHolder.mLoadFailure.setVisibility(View.VISIBLE);
+            bottomViewHolder.mLoadFailure.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    loadMore();
+                    listener.noMoreAsked(mAdapter.getItemCount(), 0, mAdapter.getItemCount() - 1);
+                }
+            });
+        }
     }
 
     public void loadNoMore() {
