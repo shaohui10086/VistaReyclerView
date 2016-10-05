@@ -174,6 +174,8 @@ public class VistaRecyclerView extends FrameLayout {
             if (mOnMoreListener != null) {
                 mAdapter.loadMore();
                 mOnMoreListener.noMoreAsked(totalItemCount, COUNT_LEFT_TO_LOAD_MORE, lastVisibleItemPosition);
+            } else {
+                mAdapter.hideLoadMore();
             }
         }
     }
@@ -465,6 +467,11 @@ public class VistaRecyclerView extends FrameLayout {
     public void setOnMoreListener(OnMoreListener listener) {
         this.mOnMoreListener = listener;
         mAdapter.setOnMoreListener(listener);
+    }
+
+    public void removeOnMoreListtener() {
+        this.mOnMoreListener = null;
+        mAdapter.setOnMoreListener(null);
     }
 
     public void setOnMoreListener(OnMoreListener listener, int preLoad) {

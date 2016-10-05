@@ -107,6 +107,10 @@ public class AgentAdapter extends RecyclerView.Adapter{
         bottomViewHolder.mLoadNoMore.setVisibility(View.VISIBLE);
     }
 
+    public void hideLoadMore() {
+        bottomViewHolder.itemView.setVisibility(View.GONE);
+    }
+
     public void placeBottomLayout(int bottomProgress,
                                   int bottomFailure,
                                   int bottomNoMore) {
@@ -138,11 +142,8 @@ public class AgentAdapter extends RecyclerView.Adapter{
         private View mLoadFailure;
         private View mLoadNoMore;
 
-        private View itemView;
-
         public BottomViewHolder(View itemView) {
             super(itemView);
-            this.itemView = itemView;
 
             loadMoreFailure = (ViewStub) itemView.findViewById(R.id.load_more_failure);
             loadMoreProgress = (ViewStub) itemView.findViewById(R.id.load_more_progress);
