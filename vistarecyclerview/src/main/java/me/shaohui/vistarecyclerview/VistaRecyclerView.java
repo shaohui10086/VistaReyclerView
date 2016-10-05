@@ -472,6 +472,7 @@ public class VistaRecyclerView extends FrameLayout {
     public void removeOnMoreListtener() {
         this.mOnMoreListener = null;
         mAdapter.setOnMoreListener(null);
+        mAdapter.hideLoadMore();
     }
 
     public void setOnMoreListener(OnMoreListener listener, int preLoad) {
