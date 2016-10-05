@@ -473,6 +473,9 @@ public class VistaRecyclerView extends FrameLayout {
         this.mOnMoreListener = null;
         mAdapter.setOnMoreListener(null);
         isLoadingMore = false;
+        if (canRefresh) {
+            refreshLayout.setEnabled(true);
+        }
         mAdapter.hideLoadMore();
     }
 
