@@ -7,6 +7,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.view.ViewStub;
 
+import android.widget.RelativeLayout;
 import me.shaohui.vistarecyclerview.OnMoreListener;
 import me.shaohui.vistarecyclerview.R;
 
@@ -22,6 +23,8 @@ public class AgentAdapter extends RecyclerView.Adapter{
     private int loadFailureId = R.layout.bottom_load_failure;
     private int loadNoMoreId = R.layout.bottom_load_no_more;
 
+    private boolean canLoadMore = true;
+
     private OnMoreListener listener;
 
     public static final int TYPE_BOTTOM = 798;
@@ -36,7 +39,7 @@ public class AgentAdapter extends RecyclerView.Adapter{
 
     @Override
     public int getItemViewType(int position) {
-        if (position == mAdapter.getItemCount()) {
+        if (canLoadMore && position == mAdapter.getItemCount()) {
             return TYPE_BOTTOM;
         } else {
             return mAdapter.getItemViewType(position);
@@ -71,7 +74,7 @@ public class AgentAdapter extends RecyclerView.Adapter{
 
     @Override
     public int getItemCount() {
-        return mAdapter.getItemCount() + 1;
+        return canLoadMore ? mAdapter.getItemCount() + 1 : mAdapter.getItemCount();
     }
 
     public void loadMore() {
@@ -108,7 +111,8 @@ public class AgentAdapter extends RecyclerView.Adapter{
     }
 
     public void hideLoadMore() {
-        bottomViewHolder.itemView.setVisibility(View.GONE);
+        canLoadMore = false;
+        notifyDataSetChanged();
     }
 
     public void placeBottomLayout(int bottomProgress,

@@ -86,7 +86,8 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void run() {
                 if (state == 2) {
-                    recyclerView.loadNoMore();
+                    //recyclerView.loadNoMore();
+                    recyclerView.removeOnMoreListtener();
                 } else if (state == 1) {
                     Collections.addAll(data, getResources().getStringArray(R.array.image_list_2));
                     recyclerView.notifyDataSetChanged();
