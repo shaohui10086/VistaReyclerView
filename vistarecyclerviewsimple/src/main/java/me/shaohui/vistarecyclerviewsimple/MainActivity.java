@@ -1,24 +1,32 @@
 package me.shaohui.vistarecyclerviewsimple;
 
+import android.graphics.Color;
 import android.os.Bundle;
 import android.os.Handler;
+import android.support.annotation.Nullable;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.GridLayoutManager;
 
+import android.util.Log;
+import android.view.View;
+import android.widget.ListView;
+import android.widget.Toast;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
 import jp.wasabeef.recyclerview.adapters.ScaleInAnimationAdapter;
+import me.shaohui.vistarecyclerview.OnItemClickListener;
 import me.shaohui.vistarecyclerview.OnMoreListener;
 import me.shaohui.vistarecyclerview.VistaRecyclerView;
+import me.shaohui.vistarecyclerview.decoration.DividerDecoration;
 import me.shaohui.vistarecyclerview.decoration.SpacingDecoration;
 
 public class MainActivity extends AppCompatActivity {
 
     private VistaRecyclerView recyclerView;
-    private List<String> data;
+    private List<String> mData;
     private Handler mHandler = new Handler();
 
     private int state = 0;
@@ -28,15 +36,16 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         setTitle("VistaRecyclerView");
+    }
+
+    @Override
+    protected void onPostCreate(@Nullable Bundle savedInstanceState) {
+        super.onPostCreate(savedInstanceState);
         recyclerView = (VistaRecyclerView) findViewById(R.id.recycler);
-        data = new ArrayList<>();
-        recyclerView.setLayoutManager(new GridLayoutManager(this, 2));
+        mData = new ArrayList<>();
+        SimpleAdapter adapter = new SimpleAdapter(mData);
 
-        SimpleAdapter adapter = new SimpleAdapter(data);
-
-        recyclerView.setAdapter(new ScaleInAnimationAdapter(adapter));
-//        recyclerView.addItemDecoration(
-//                new DividerDecoration(getResources().getColor(R.color.window_background), 20));
+        recyclerView.setAdapter(adapter);
         recyclerView.addItemDecoration(new SpacingDecoration(20));
 
         recyclerView.setRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
@@ -45,7 +54,6 @@ public class MainActivity extends AppCompatActivity {
                 loadData();
             }
         });
-
         recyclerView.setOnMoreListener(new OnMoreListener() {
             @Override
             public void noMoreAsked(int total, int left, int current) {
@@ -53,21 +61,30 @@ public class MainActivity extends AppCompatActivity {
             }
         });
 
+        recyclerView.setRetryListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                loadData();
+            }
+        });
 
-        loadEmptyData();
+        recyclerView.setOnItemClickListener(new OnItemClickListener() {
+            @Override
+            public void onItemClick(View view, int position) {
+                Toast.makeText(MainActivity.this, position + "", Toast.LENGTH_SHORT).show();
+            }
+        });
+
+        recyclerView.setRefreshing(true);
+        loadData();
     }
 
     private void loadData() {
         mHandler.postDelayed(new Runnable() {
             @Override
             public void run() {
-                if (state == 5) {
-                    Collections.addAll(data, getResources().getStringArray(R.array.image_list));
-                    recyclerView.notifyDataSetChanged();
-                } else {
-                    recyclerView.showErrorView();
-                    state = 5;
-                }
+                Collections.addAll(mData, getResources().getStringArray(R.array.image_list));
+                recyclerView.notifyDataSetChanged();
             }
         }, 1000);
     }
@@ -85,17 +102,7 @@ public class MainActivity extends AppCompatActivity {
         mHandler.postDelayed(new Runnable() {
             @Override
             public void run() {
-                if (state == 2) {
-                    //recyclerView.loadNoMore();
-                    recyclerView.removeOnMoreListtener();
-                } else if (state == 1) {
-                    Collections.addAll(data, getResources().getStringArray(R.array.image_list_2));
-                    recyclerView.notifyDataSetChanged();
-                    state = 2;
-                } else {
-                    recyclerView.loadMoreFailure();
-                    state = 1;
-                }
+                recyclerView.loadNoMore();
             }
         }, 1000);
     }

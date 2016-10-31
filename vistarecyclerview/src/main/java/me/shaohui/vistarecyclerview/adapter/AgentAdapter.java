@@ -2,39 +2,54 @@ package me.shaohui.vistarecyclerview.adapter;
 
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.StaggeredGridLayoutManager;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.ViewStub;
-
-import android.widget.RelativeLayout;
+import me.shaohui.vistarecyclerview.OnItemClickListener;
 import me.shaohui.vistarecyclerview.OnMoreListener;
 import me.shaohui.vistarecyclerview.R;
 
 /**
  * Created by shaohui on 16/7/31.
  */
-public class AgentAdapter extends RecyclerView.Adapter{
+public class AgentAdapter extends RecyclerView.Adapter {
+
+    private final int BOTTOM_STATE_LOADING = 1;
+    private final int BOTTOM_STATE_FAILED = 2;
+    private final int BOTTOM_STATE_NO_MORE = 3;
+    private final int BOTTOM_STATE_SUCCESS = 4;
 
     private RecyclerView.Adapter<RecyclerView.ViewHolder> mAdapter;
-    private BottomViewHolder bottomViewHolder;
 
     private int loadProgressId = R.layout.bottom_load_progress;
     private int loadFailureId = R.layout.bottom_load_failure;
     private int loadNoMoreId = R.layout.bottom_load_no_more;
 
-    private boolean canLoadMore = true;
+    private boolean canLoadMore = false;
+
+    private int mCurrentBottomState = BOTTOM_STATE_LOADING;
 
     private OnMoreListener listener;
 
-    public static final int TYPE_BOTTOM = 798;
+    private OnItemClickListener mOnItemClickListener;
 
-    public AgentAdapter(RecyclerView.Adapter<RecyclerView.ViewHolder> adapter) {
-        mAdapter = adapter;
+    private static final int TYPE_BOTTOM = 798;
+
+    public AgentAdapter() {
+    }
+
+    public AgentAdapter(RecyclerView.Adapter adapter) {
+        this.mAdapter = adapter;
     }
 
     public void setAdapter(RecyclerView.Adapter<RecyclerView.ViewHolder> adapter) {
         mAdapter = adapter;
+    }
+
+    public void setCanLoadMore(boolean canLoadMore) {
+        this.canLoadMore = canLoadMore;
     }
 
     @Override
@@ -49,75 +64,97 @@ public class AgentAdapter extends RecyclerView.Adapter{
     @Override
     public RecyclerView.ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
         if (viewType == TYPE_BOTTOM) {
-            bottomViewHolder = new BottomViewHolder(LayoutInflater
-                    .from(parent.getContext()).inflate(R.layout.bottom_layout, parent, false));
-            bottomViewHolder.setLayout(loadProgressId, loadFailureId, loadNoMoreId);
-            return bottomViewHolder;
+            return new BottomViewHolder(LayoutInflater.from(parent.getContext())
+                    .inflate(R.layout.bottom_layout, parent, false));
         } else {
             return mAdapter.onCreateViewHolder(parent, viewType);
         }
     }
 
     @Override
-    public void onBindViewHolder(RecyclerView.ViewHolder holder, int position) {
+    public void onBindViewHolder(final RecyclerView.ViewHolder holder, final int position) {
         if (getItemViewType(position) == TYPE_BOTTOM) {
             BottomViewHolder viewHolder = (BottomViewHolder) holder;
+            viewHolder.setLayout(loadProgressId, loadFailureId, loadNoMoreId);
+            Log.i("TAG", "绑定view" +  canLoadMore);
 
             // 处理StaggeredGrid
-            if (viewHolder.itemView.getLayoutParams() instanceof StaggeredGridLayoutManager.LayoutParams) {
-                ((StaggeredGridLayoutManager.LayoutParams) viewHolder.itemView.getLayoutParams()).setFullSpan(true);
+            if (viewHolder.itemView.getLayoutParams() instanceof StaggeredGridLayoutManager
+                    .LayoutParams) {
+                ((StaggeredGridLayoutManager.LayoutParams) viewHolder.itemView.getLayoutParams())
+                        .setFullSpan(
+                        true);
+            }
+
+            switch (mCurrentBottomState) {
+                case BOTTOM_STATE_LOADING:
+                    Log.i("TAG", "显示Progress");
+                    viewHolder.showLoading();
+                    break;
+                case BOTTOM_STATE_NO_MORE:
+                    viewHolder.showNoMore();
+                    break;
+                case BOTTOM_STATE_FAILED:
+                    viewHolder.showFailed();
+                    viewHolder.itemView.setOnClickListener(new View.OnClickListener() {
+                        @Override
+                        public void onClick(View v) {
+                            loadMore();
+                            notifyItemChanged(getItemCount() - 1);
+                            listener.noMoreAsked(mAdapter.getItemCount(), 0,
+                                    mAdapter.getItemCount() - 1);
+                        }
+                    });
+                    break;
+                default:
+                    viewHolder.showLoading();
             }
         } else {
+            if (mOnItemClickListener != null) {
+                holder.itemView.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        mOnItemClickListener.onItemClick(holder.itemView, position);
+                    }
+                });
+            }
             mAdapter.onBindViewHolder(holder, position);
         }
     }
 
     @Override
     public int getItemCount() {
-        return canLoadMore ? mAdapter.getItemCount() + 1 : mAdapter.getItemCount();
+        return mAdapter.getItemCount() > 0 && canLoadMore ? mAdapter.getItemCount() + 1
+                : mAdapter.getItemCount();
     }
 
     public void loadMore() {
-        if (bottomViewHolder != null) {
-            bottomViewHolder.mLoadFailure.setVisibility(View.GONE);
-            bottomViewHolder.mLoadNoMore.setVisibility(View.GONE);
-            bottomViewHolder.mLoadProgress.setVisibility(View.VISIBLE);
-        }
+        mCurrentBottomState = BOTTOM_STATE_LOADING;
     }
 
     public void loadMoreSuccess() {
-        if (bottomViewHolder != null) {
-            bottomViewHolder.mLoadProgress.setVisibility(View.GONE);
-        }
     }
 
     public void loadFailure() {
-        if (bottomViewHolder != null) {
-            bottomViewHolder.mLoadProgress.setVisibility(View.GONE);
-            bottomViewHolder.mLoadFailure.setVisibility(View.VISIBLE);
-            bottomViewHolder.mLoadFailure.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View view) {
-                    loadMore();
-                    listener.noMoreAsked(mAdapter.getItemCount(), 0, mAdapter.getItemCount() - 1);
-                }
-            });
-        }
+        mCurrentBottomState = BOTTOM_STATE_FAILED;
+        notifyItemChanged(getItemCount() - 1);
     }
 
     public void loadNoMore() {
-        bottomViewHolder.mLoadProgress.setVisibility(View.GONE);
-        bottomViewHolder.mLoadNoMore.setVisibility(View.VISIBLE);
+        mCurrentBottomState = BOTTOM_STATE_NO_MORE;
+        notifyItemChanged(getItemCount() - 1);
     }
 
     public void hideLoadMore() {
         canLoadMore = false;
-        notifyDataSetChanged();
+        notifyItemRemoved(getItemCount());
     }
 
-    public void placeBottomLayout(int bottomProgress,
-                                  int bottomFailure,
-                                  int bottomNoMore) {
+    public void initBottomState() {
+        mCurrentBottomState = BOTTOM_STATE_LOADING;
+    }
+
+    public void placeBottomLayout(int bottomProgress, int bottomFailure, int bottomNoMore) {
         loadProgressId = bottomProgress;
         loadFailureId = bottomFailure;
         loadNoMoreId = bottomNoMore;
@@ -127,26 +164,26 @@ public class AgentAdapter extends RecyclerView.Adapter{
         this.listener = listener;
     }
 
-    public void setLoadNoMoreId(int loadNoMoreId) {
-        bottomViewHolder.loadNoMoreId = loadNoMoreId;
+    public void setOnItemClickListener(OnItemClickListener listener) {
+        mOnItemClickListener = listener;
     }
 
-    public class BottomViewHolder extends RecyclerView.ViewHolder {
+    private class BottomViewHolder extends RecyclerView.ViewHolder {
 
         private ViewStub loadMoreProgress;
         private ViewStub loadMoreFailure;
         private ViewStub loadNoMore;
 
-        // 默认布局
-        private int loadProgressId = R.layout.bottom_load_progress;
-        private int loadFailureId = R.layout.bottom_load_failure;
-        private int loadNoMoreId = R.layout.bottom_load_no_more;
+        // 加载布局id
+        private int loadProgressId;
+        private int loadFailureId;
+        private int loadNoMoreId;
 
         private View mLoadProgress;
         private View mLoadFailure;
         private View mLoadNoMore;
 
-        public BottomViewHolder(View itemView) {
+        BottomViewHolder(View itemView) {
             super(itemView);
 
             loadMoreFailure = (ViewStub) itemView.findViewById(R.id.load_more_failure);
@@ -154,28 +191,45 @@ public class AgentAdapter extends RecyclerView.Adapter{
             loadNoMore = (ViewStub) itemView.findViewById(R.id.load_no_more);
         }
 
-        public void setLayout(int progress, int failure, int noMore) {
+        void showLoading() {
+            mLoadProgress.setVisibility(View.VISIBLE);
+        }
+
+        void showFailed() {
+            mLoadFailure.setVisibility(View.VISIBLE);
+        }
+
+        void showNoMore() {
+            mLoadNoMore.setVisibility(View.VISIBLE);
+        }
+
+        void setLayout(int progress, int failure, int noMore) {
             loadProgressId = progress;
             loadFailureId = failure;
             loadNoMoreId = noMore;
-
             initView();
         }
 
         private void initView() {
-            loadMoreProgress.setLayoutResource(loadProgressId);
-            mLoadProgress = loadMoreProgress.inflate();
-            loadMoreProgress.setVisibility(View.GONE);
+            if (loadMoreProgress != null) {
+                loadMoreProgress.setLayoutResource(loadProgressId);
+                mLoadProgress = loadMoreProgress.inflate();
+                loadMoreProgress = null;
+            }
             mLoadProgress.setVisibility(View.GONE);
 
-            loadMoreFailure.setLayoutResource(loadFailureId);
-            mLoadFailure = loadMoreFailure.inflate();
-            loadMoreFailure.setVisibility(View.GONE);
+            if (loadMoreFailure != null) {
+                loadMoreFailure.setLayoutResource(loadFailureId);
+                mLoadFailure = loadMoreFailure.inflate();
+                loadMoreFailure = null;
+            }
             mLoadFailure.setVisibility(View.GONE);
 
-            loadNoMore.setLayoutResource(loadNoMoreId);
-            mLoadNoMore = loadNoMore.inflate();
-            loadNoMore.setVisibility(View.GONE);
+            if (loadNoMore != null) {
+                loadNoMore.setLayoutResource(loadNoMoreId);
+                mLoadNoMore = loadNoMore.inflate();
+                loadNoMore = null;
+            }
             mLoadNoMore.setVisibility(View.GONE);
         }
     }

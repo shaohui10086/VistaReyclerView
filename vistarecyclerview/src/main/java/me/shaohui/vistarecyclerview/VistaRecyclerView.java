@@ -2,7 +2,6 @@ package me.shaohui.vistarecyclerview;
 
 import android.content.Context;
 import android.content.res.TypedArray;
-import android.graphics.Canvas;
 import android.support.annotation.ColorRes;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.widget.GridLayoutManager;
@@ -10,14 +9,11 @@ import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.StaggeredGridLayoutManager;
 import android.util.AttributeSet;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewStub;
 import android.widget.FrameLayout;
-
 import java.util.IllegalFormatFlagsException;
-
 import me.shaohui.vistarecyclerview.adapter.AgentAdapter;
 
 /**
@@ -25,7 +21,7 @@ import me.shaohui.vistarecyclerview.adapter.AgentAdapter;
  */
 public class VistaRecyclerView extends FrameLayout {
 
-    private SwipeRefreshLayout refreshLayout;
+    private SwipeRefreshLayout mRefreshLayout;
     private RecyclerView mRecycler;
     private AgentAdapter mAdapter;
 
@@ -46,7 +42,7 @@ public class VistaRecyclerView extends FrameLayout {
     private int[] lastScrollPositions;
 
     private boolean isLoadingMore;
-    private boolean canLoadMore = true;
+    private boolean canLoadMore = false;
     private boolean canRefresh = false;
 
     private RecyclerView.OnScrollListener mInternalOnScrollListener;
@@ -56,14 +52,11 @@ public class VistaRecyclerView extends FrameLayout {
     public static final String TAG = "VistaRecyclerView";
 
     public VistaRecyclerView(Context context) {
-        super(context);
-        initView(context);
+        this(context, null);
     }
 
     public VistaRecyclerView(Context context, AttributeSet attrs) {
-        super(context, attrs);
-        initAttrs(attrs);
-        initView(context);
+        this(context, attrs, 0);
     }
 
     public VistaRecyclerView(Context context, AttributeSet attrs, int defStyleAttr) {
@@ -75,11 +68,18 @@ public class VistaRecyclerView extends FrameLayout {
     private void initAttrs(AttributeSet attr) {
         TypedArray a = getContext().obtainStyledAttributes(attr, R.styleable.VistaRecyclerView);
         try {
-            mBottomLoadProgressId = a.getResourceId(R.styleable.VistaRecyclerView_bottom_load_progress, R.layout.bottom_load_progress);
-            mBottomLoadFailureId = a.getResourceId(R.styleable.VistaRecyclerView_bottom_load_failure, R.layout.bottom_load_failure);
-            mBottomLoadNoMoreId = a.getResourceId(R.styleable.VistaRecyclerView_bottom_load_no_more, R.layout.bottom_load_no_more);
-            mEmptyId = a.getResourceId(R.styleable.VistaRecyclerView_empty_layout, R.layout.empty_layout);
-            mErrorId = a.getResourceId(R.styleable.VistaRecyclerView_error_layout, R.layout.error_layout);
+            mBottomLoadProgressId =
+                    a.getResourceId(R.styleable.VistaRecyclerView_bottom_load_progress,
+                            R.layout.bottom_load_progress);
+            mBottomLoadFailureId =
+                    a.getResourceId(R.styleable.VistaRecyclerView_bottom_load_failure,
+                            R.layout.bottom_load_failure);
+            mBottomLoadNoMoreId = a.getResourceId(R.styleable.VistaRecyclerView_bottom_load_no_more,
+                    R.layout.bottom_load_no_more);
+            mEmptyId = a.getResourceId(R.styleable.VistaRecyclerView_empty_layout,
+                    R.layout.empty_layout);
+            mErrorId = a.getResourceId(R.styleable.VistaRecyclerView_error_layout,
+                    R.layout.error_layout);
             mLoadingProgressId = a.getResourceId(R.styleable.VistaRecyclerView_load_layout, 0);
             COUNT_LEFT_TO_LOAD_MORE = a.getInt(R.styleable.VistaRecyclerView_preload_size, 0);
             refreshColor = a.getColor(R.styleable.VistaRecyclerView_refresh_color, 0);
@@ -89,14 +89,14 @@ public class VistaRecyclerView extends FrameLayout {
     }
 
     private void initView(Context context) {
-        View v = LayoutInflater.from(context)
-                .inflate(R.layout.vista_recycler_view, this);
-        refreshLayout = (SwipeRefreshLayout) v.findViewById(R.id.refresh_layout);
-        refreshLayout.setEnabled(false);
+        View v = LayoutInflater.from(context).inflate(R.layout.vista_recycler_view, this);
+        mRefreshLayout = (SwipeRefreshLayout) v.findViewById(R.id.refresh_layout);
+        mRefreshLayout.setEnabled(canRefresh);
         if (refreshColor != 0) {
-            refreshLayout.setColorSchemeColors(new int[]{refreshColor});
+            mRefreshLayout.setColorSchemeColors(refreshColor);
         }
 
+        // load progress
         ViewStub loadProgress = (ViewStub) v.findViewById(R.id.load_progress);
         if (mLoadingProgressId != 0) {
             loadProgress.setLayoutResource(mLoadingProgressId);
@@ -123,15 +123,9 @@ public class VistaRecyclerView extends FrameLayout {
 
     private void initRecycler(View v) {
         mRecycler = (RecyclerView) v.findViewById(R.id.vista_recycler);
-        mAdapter = new AgentAdapter(null);
-        mAdapter.placeBottomLayout(mBottomLoadProgressId, mBottomLoadFailureId, mBottomLoadNoMoreId);
-
-        mRecycler.addItemDecoration(new RecyclerView.ItemDecoration() {
-            @Override
-            public void onDraw(Canvas c, RecyclerView parent, RecyclerView.State state) {
-                super.onDraw(c, parent, state);
-            }
-        });
+        mAdapter = new AgentAdapter();
+        mAdapter.placeBottomLayout(mBottomLoadProgressId, mBottomLoadFailureId,
+                mBottomLoadNoMoreId);
 
         mInternalOnScrollListener = new RecyclerView.OnScrollListener() {
             @Override
@@ -151,32 +145,34 @@ public class VistaRecyclerView extends FrameLayout {
                 if (mExternalOnScrollListener != null) {
                     mExternalOnScrollListener.onScrolled(recyclerView, dx, dy);
                 }
-
             }
         };
         mRecycler.addOnScrollListener(mInternalOnScrollListener);
-        mRecycler.setLayoutManager(new LinearLayoutManager(getContext(),
-                LinearLayoutManager.VERTICAL, false));
-
+        mRecycler.setLayoutManager(
+                new LinearLayoutManager(getContext(), LinearLayoutManager.VERTICAL, false));
     }
 
     private void processOnMore() {
         RecyclerView.LayoutManager manager = mRecycler.getLayoutManager();
-        int lastVisibleItemPosition = getLastVisibleItemPosition(manager) + 1;
+        int lastVisibleItemPosition = getLastVisibleItemPosition(manager);
         int visibleItemCount = manager.getChildCount();
-        int totalItemCount = manager.getItemCount() - 1;
+        int totalItemCount = manager.getItemCount();
 
-        if (totalItemCount - lastVisibleItemPosition <= COUNT_LEFT_TO_LOAD_MORE
-                && !isLoadingMore && !isRefreshing() && canLoadMore) {
+        if ((totalItemCount - lastVisibleItemPosition - 1 <= COUNT_LEFT_TO_LOAD_MORE)
+                && !isLoadingMore
+                && !isRefreshing()
+                && canLoadMore) {
             isLoadingMore = true;
-            refreshLayout.setEnabled(false);
+            mRefreshLayout.setEnabled(false);
 
             if (mOnMoreListener != null) {
                 mAdapter.loadMore();
-                mOnMoreListener.noMoreAsked(totalItemCount, COUNT_LEFT_TO_LOAD_MORE, lastVisibleItemPosition);
-            } else {
-                mAdapter.hideLoadMore();
+                mOnMoreListener.noMoreAsked(totalItemCount, COUNT_LEFT_TO_LOAD_MORE,
+                        lastVisibleItemPosition);
             }
+            //else {
+            //    mAdapter.hideLoadMore();
+            //}
         }
     }
 
@@ -195,10 +191,12 @@ public class VistaRecyclerView extends FrameLayout {
         }
         switch (layoutManagerType) {
             case LINEAR:
-                lastVisibleItemPosition = ((LinearLayoutManager) manager).findLastVisibleItemPosition();
+                lastVisibleItemPosition =
+                        ((LinearLayoutManager) manager).findLastVisibleItemPosition();
                 break;
             case GRID:
-                lastVisibleItemPosition = ((GridLayoutManager) manager).findLastVisibleItemPosition();
+                lastVisibleItemPosition =
+                        ((GridLayoutManager) manager).findLastVisibleItemPosition();
                 break;
             case STAGGERED_GRID:
                 lastVisibleItemPosition = caseStaggeredGrid(manager);
@@ -209,7 +207,7 @@ public class VistaRecyclerView extends FrameLayout {
 
     private int caseStaggeredGrid(RecyclerView.LayoutManager layoutManager) {
         StaggeredGridLayoutManager gridLayoutManager = (StaggeredGridLayoutManager) layoutManager;
-        if (lastScrollPositions == null){
+        if (lastScrollPositions == null) {
             lastScrollPositions = new int[gridLayoutManager.getSpanCount()];
         }
         gridLayoutManager.findLastVisibleItemPositions(lastScrollPositions);
@@ -218,7 +216,7 @@ public class VistaRecyclerView extends FrameLayout {
 
     private int getMax(int[] positions) {
         int max = Integer.MIN_VALUE;
-        for (int value:positions) {
+        for (int value : positions) {
             if (value > max) {
                 max = value;
             }
@@ -227,8 +225,7 @@ public class VistaRecyclerView extends FrameLayout {
     }
 
     private void setInternalAdapter(RecyclerView.Adapter<RecyclerView.ViewHolder> adapter,
-                                    boolean compatibleWithPrevious,
-                                    boolean removeAndRecyclerExistingViews) {
+            boolean compatibleWithPrevious, boolean removeAndRecyclerExistingViews) {
         mAdapter.setAdapter(adapter);
         if (compatibleWithPrevious) {
             mRecycler.swapAdapter(mAdapter, removeAndRecyclerExistingViews);
@@ -277,20 +274,22 @@ public class VistaRecyclerView extends FrameLayout {
                 }
 
                 private void update() {
-                    refreshLayout.setRefreshing(false);
+                    mRefreshLayout.setRefreshing(false);
                     isLoadingMore = false;
-                    canLoadMore = true;
+                    if (mOnMoreListener != null) {
+                        canLoadMore = true;
+                    }
                     mAdapter.loadMoreSuccess();
 
                     if (mRecycler.getAdapter().getItemCount() == 0 && mEmpty != null) {
                         mEmpty.setVisibility(VISIBLE);
-                    } else if (mEmpty != null){
+                    } else if (mEmpty != null) {
                         mEmpty.setVisibility(GONE);
                         mRecycler.setVisibility(VISIBLE);
                     }
 
-                    if (canRefresh && !refreshLayout.isEnabled()) {
-                        refreshLayout.setEnabled(true);
+                    if (canRefresh && !mRefreshLayout.isEnabled()) {
+                        mRefreshLayout.setEnabled(true);
                     }
 
                     if (mLoadProgress != null) {
@@ -302,22 +301,21 @@ public class VistaRecyclerView extends FrameLayout {
                     }
                 }
             });
-
         }
-        if (mEmpty != null && !isRefreshing()) {
-            mEmpty.setVisibility(null != adapter
-                    && mRecycler.getAdapter().getItemCount() > 0 ? GONE:VISIBLE);
+        if (mLoadProgress != null && !isRefreshing()) {
+            mLoadProgress.setVisibility(
+                    null != adapter && mRecycler.getAdapter().getItemCount() > 0 ? GONE : VISIBLE);
         }
     }
 
     private boolean isRefreshing() {
-        return refreshLayout.isRefreshing();
+        return mRefreshLayout.isRefreshing();
     }
 
     public void loadMoreFailure() {
 
         if (canRefresh) {
-            refreshLayout.setEnabled(true);
+            mRefreshLayout.setEnabled(true);
         }
 
         isLoadingMore = false;
@@ -329,7 +327,7 @@ public class VistaRecyclerView extends FrameLayout {
         isLoadingMore = false;
 
         if (canRefresh) {
-            refreshLayout.setEnabled(true);
+            mRefreshLayout.setEnabled(true);
         }
 
         mAdapter.loadNoMore();
@@ -355,13 +353,13 @@ public class VistaRecyclerView extends FrameLayout {
                 && mRecycler.getLayoutManager() instanceof GridLayoutManager) {
             spanSizeLookup.bindAdapter(mAdapter);
 
-            ((GridLayoutManager) mRecycler.getLayoutManager()).setSpanSizeLookup(new GridLayoutManager.SpanSizeLookup() {
-                @Override
-                public int getSpanSize(int position) {
-                    return spanSizeLookup.returnSpanSize(position);
-                }
-            });
-
+            ((GridLayoutManager) mRecycler.getLayoutManager()).setSpanSizeLookup(
+                    new GridLayoutManager.SpanSizeLookup() {
+                        @Override
+                        public int getSpanSize(int position) {
+                            return spanSizeLookup.returnSpanSize(position);
+                        }
+                    });
         } else {
             throw new IllegalFormatFlagsException("The Layout must be GridLayout");
         }
@@ -372,7 +370,7 @@ public class VistaRecyclerView extends FrameLayout {
     }
 
     public void swapAdapter(RecyclerView.Adapter<RecyclerView.ViewHolder> adapter,
-                            boolean removeAndRecyclerExistingViews) {
+            boolean removeAndRecyclerExistingViews) {
         setInternalAdapter(adapter, true, removeAndRecyclerExistingViews);
     }
 
@@ -381,7 +379,7 @@ public class VistaRecyclerView extends FrameLayout {
     }
 
     public void showEmptyView() {
-        refreshLayout.setRefreshing(false);
+        mRefreshLayout.setRefreshing(false);
         if (mEmpty != null) {
             mEmpty.setVisibility(VISIBLE);
         }
@@ -395,7 +393,7 @@ public class VistaRecyclerView extends FrameLayout {
     }
 
     public void showErrorView() {
-        refreshLayout.setRefreshing(false);
+        mRefreshLayout.setRefreshing(false);
         if (mError != null) {
             mError.setVisibility(VISIBLE);
         }
@@ -406,7 +404,7 @@ public class VistaRecyclerView extends FrameLayout {
 
     }
 
-    public void setErrorListener(OnClickListener listener) {
+    public void setRetryListener(OnClickListener listener) {
         if (mError != null) {
             mError.setOnClickListener(listener);
         }
@@ -419,7 +417,7 @@ public class VistaRecyclerView extends FrameLayout {
     }
 
     public void clear() {
-        refreshLayout.setRefreshing(false);
+        mRefreshLayout.setRefreshing(false);
         isLoadingMore = false;
         setAdapter(null);
     }
@@ -428,23 +426,33 @@ public class VistaRecyclerView extends FrameLayout {
         postDelayed(new Runnable() {
             @Override
             public void run() {
-                refreshLayout.setRefreshing(isRefreshing);
+                mRefreshLayout.setRefreshing(isRefreshing);
             }
         }, 1);
     }
 
     public void setRefreshListener(final SwipeRefreshLayout.OnRefreshListener listener) {
-        refreshLayout.setEnabled(true);
+        mRefreshLayout.setEnabled(true);
         canRefresh = true;
-        refreshLayout.setOnRefreshListener(listener);
+        mRefreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
+            @Override
+            public void onRefresh() {
+                listener.onRefresh();
+                mAdapter.initBottomState();
+            }
+        });
 
         mError.setOnClickListener(new OnClickListener() {
             @Override
             public void onClick(View view) {
-                refreshLayout.setRefreshing(true);
+                mRefreshLayout.setRefreshing(true);
                 listener.onRefresh();
             }
         });
+    }
+
+    public void setOnItemClickListener(OnItemClickListener listener) {
+        mAdapter.setOnItemClickListener(listener);
     }
 
     public RecyclerView getRecycler() {
@@ -459,38 +467,38 @@ public class VistaRecyclerView extends FrameLayout {
         mRecycler.setItemAnimator(itemAnimator);
     }
 
-
     public void addOnItemTouchListener(RecyclerView.OnItemTouchListener listener) {
         mRecycler.addOnItemTouchListener(listener);
     }
 
     public void setOnMoreListener(OnMoreListener listener) {
-        this.mOnMoreListener = listener;
-        mAdapter.setOnMoreListener(listener);
+        setOnMoreListener(listener, 0);
     }
 
-    public void removeOnMoreListtener() {
-        this.mOnMoreListener = null;
-        mAdapter.setOnMoreListener(null);
+    public void removeOnMoreListener() {
+        mOnMoreListener = null;
         isLoadingMore = false;
         canLoadMore = false;
         if (canRefresh) {
-            refreshLayout.setEnabled(true);
+            mRefreshLayout.setEnabled(true);
         }
         mAdapter.hideLoadMore();
     }
 
     public void setOnMoreListener(OnMoreListener listener, int preLoad) {
         this.mOnMoreListener = listener;
+        canLoadMore = true;
+        mAdapter.setCanLoadMore(true);
+        mAdapter.setOnMoreListener(listener);
         COUNT_LEFT_TO_LOAD_MORE = preLoad;
     }
 
     public void setRefreshColorSchemeColors(int... colors) {
-        refreshLayout.setColorSchemeColors(colors);
+        mRefreshLayout.setColorSchemeColors(colors);
     }
 
     public void setRefreshColorSchemeResources(@ColorRes int... colorResources) {
-        refreshLayout.setColorSchemeResources(colorResources);
+        mRefreshLayout.setColorSchemeResources(colorResources);
     }
 
     public void setOnScrollListener(RecyclerView.OnScrollListener listener) {
@@ -528,7 +536,7 @@ public class VistaRecyclerView extends FrameLayout {
     }
 
     private SwipeRefreshLayout getRefreshLayout() {
-        return refreshLayout;
+        return mRefreshLayout;
     }
 
     private RecyclerView getRecyclrerView() {
