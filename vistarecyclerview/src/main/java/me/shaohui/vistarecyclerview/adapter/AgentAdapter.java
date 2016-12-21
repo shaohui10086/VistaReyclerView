@@ -2,7 +2,6 @@ package me.shaohui.vistarecyclerview.adapter;
 
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.StaggeredGridLayoutManager;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -76,7 +75,6 @@ public class AgentAdapter extends RecyclerView.Adapter {
         if (getItemViewType(position) == TYPE_BOTTOM) {
             BottomViewHolder viewHolder = (BottomViewHolder) holder;
             viewHolder.setLayout(loadProgressId, loadFailureId, loadNoMoreId);
-            Log.i("TAG", "绑定view" +  canLoadMore);
 
             // 处理StaggeredGrid
             if (viewHolder.itemView.getLayoutParams() instanceof StaggeredGridLayoutManager
@@ -88,7 +86,6 @@ public class AgentAdapter extends RecyclerView.Adapter {
 
             switch (mCurrentBottomState) {
                 case BOTTOM_STATE_LOADING:
-                    Log.i("TAG", "显示Progress");
                     viewHolder.showLoading();
                     break;
                 case BOTTOM_STATE_NO_MORE:
@@ -101,7 +98,7 @@ public class AgentAdapter extends RecyclerView.Adapter {
                         public void onClick(View v) {
                             loadMore();
                             notifyItemChanged(getItemCount() - 1);
-                            listener.noMoreAsked(mAdapter.getItemCount(), 0,
+                            listener.onMoreAsked(mAdapter.getItemCount(), 0,
                                     mAdapter.getItemCount() - 1);
                         }
                     });

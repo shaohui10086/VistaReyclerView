@@ -140,6 +140,7 @@ public class VistaRecyclerView extends FrameLayout {
             public void onScrolled(RecyclerView recyclerView, int dx, int dy) {
                 super.onScrolled(recyclerView, dx, dy);
 
+                // 加载下一页返回太快会导致：Cannot call this method in a scroll callback. Scroll callbacks might be run during a measure & layout pass where you cannot change the RecyclerView data. Any method call that might change the structure of the RecyclerView or the adapter contents should be postponed to the next frame.
                 processOnMore();
 
                 if (mExternalOnScrollListener != null) {
@@ -154,21 +155,26 @@ public class VistaRecyclerView extends FrameLayout {
 
     private void processOnMore() {
         RecyclerView.LayoutManager manager = mRecycler.getLayoutManager();
-        int lastVisibleItemPosition = getLastVisibleItemPosition(manager);
+        final int lastVisibleItemPosition = getLastVisibleItemPosition(manager);
         int visibleItemCount = manager.getChildCount();
-        int totalItemCount = manager.getItemCount();
+        final int totalItemCount = manager.getItemCount();
 
-        if ((totalItemCount - lastVisibleItemPosition - 1 <= COUNT_LEFT_TO_LOAD_MORE)
+        if (canLoadMore
                 && !isLoadingMore
                 && !isRefreshing()
-                && canLoadMore) {
+                && (totalItemCount - lastVisibleItemPosition - 1 <= COUNT_LEFT_TO_LOAD_MORE)) {
             isLoadingMore = true;
             mRefreshLayout.setEnabled(false);
 
             if (mOnMoreListener != null) {
                 mAdapter.loadMore();
-                mOnMoreListener.noMoreAsked(totalItemCount, COUNT_LEFT_TO_LOAD_MORE,
-                        lastVisibleItemPosition);
+                mRecycler.postDelayed(new Runnable() {
+                    @Override
+                    public void run() {
+                        mOnMoreListener.onMoreAsked(totalItemCount, COUNT_LEFT_TO_LOAD_MORE,
+                                lastVisibleItemPosition);
+                    }
+                }, 16);
             }
             //else {
             //    mAdapter.hideLoadMore();

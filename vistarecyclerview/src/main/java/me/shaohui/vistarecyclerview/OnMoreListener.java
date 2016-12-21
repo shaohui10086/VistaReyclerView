@@ -5,6 +5,6 @@ package me.shaohui.vistarecyclerview;
  */
 public interface OnMoreListener {
 
-    void noMoreAsked(int total, int left, int current);
+    void onMoreAsked(int total, int left, int current);
 
 }
