@@ -282,9 +282,6 @@ public class VistaRecyclerView extends FrameLayout {
                 private void update() {
                     mRefreshLayout.setRefreshing(false);
                     isLoadingMore = false;
-                    if (mOnMoreListener != null) {
-                        canLoadMore = true;
-                    }
                     mAdapter.loadMoreSuccess();
 
                     if (mRecycler.getAdapter().getItemCount() == 0 && mEmpty != null) {

@@ -1,5 +1,5 @@
 # VistaRecyclerView
-[![build](https://img.shields.io/badge/build-1.0.15-brightgreen.svg?maxAge=2592000)](https://bintray.com/shaohui/maven/VistaRecyclerView)
+[![build](https://img.shields.io/badge/build-1.1.0-brightgreen.svg?maxAge=2592000)](https://bintray.com/shaohui/maven/VistaRecyclerView)
 [![license](https://img.shields.io/badge/license-Apache%202-blue.svg?maxAge=2592000)](https://github.com/shaohui10086/VistaReyclerView/blob/master/LICENSE)
 
 One approve `drop-down refresh` and bottom `load more` lightweight RecyclerView
@@ -93,7 +93,7 @@ Maven
     <dependency>
       <groupId>me.shaohui.vistarecyclerview</groupId>
       <artifactId>vistarecyclerview</artifactId>
-      <version>1.0.15</version>
+      <version>1.1.5</version>
       <type>pom</type>
     </dependency>
 
@@ -101,7 +101,7 @@ Maven
 Gradle
 
 	dependencies {
-        compile 'me.shaohui.vistarecyclerview:vistarecyclerview:1.0.15'
+        compile 'me.shaohui.vistarecyclerview:vistarecyclerview:1.1.5'
      }
 
 ## Thanks For
